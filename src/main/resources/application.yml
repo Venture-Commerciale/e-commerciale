@@ -4,8 +4,8 @@ server:
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/ubp
-    username: ubp_user
-    password: ubp_pass
+    username: postgres
+    password: Gaurav@01postgres
   jpa:
     hibernate:
       ddl-auto: update
