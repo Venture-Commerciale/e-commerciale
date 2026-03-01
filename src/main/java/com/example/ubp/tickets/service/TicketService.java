@@ -59,9 +59,15 @@ public class TicketService {
         UserPrincipal principal,
         TicketStatus status,
         Long assignedToId,
+        Long customerId,
         Pageable pageable
     ) {
-        if (isStaff(principal)) {
+        if (com.example.ubp.auth.util.SecurityUtils.isStaff(principal)) {
+            if (customerId != null) {
+                User customer = userRepository.findById(customerId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
+                return ticketRepository.findByCustomer(customer, pageable).map(this::toResponse);
+            }
             if (assignedToId != null) {
                 User assignedTo = userRepository.findById(assignedToId)
                     .orElseThrow(() -> new ResourceNotFoundException("Assigned user not found"));
@@ -80,7 +86,8 @@ public class TicketService {
     public TicketResponse getTicket(UserPrincipal principal, Long id) {
         Ticket ticket = ticketRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Ticket not found"));
-        if (!isStaff(principal) && !ticket.getCustomer().getId().equals(principal.getUser().getId())) {
+        if (!com.example.ubp.auth.util.SecurityUtils.isStaff(principal)
+            && !ticket.getCustomer().getId().equals(principal.getUser().getId())) {
             throw new IllegalArgumentException("Not allowed to view this ticket");
         }
         return toResponse(ticket);
@@ -91,17 +98,18 @@ public class TicketService {
         Ticket ticket = ticketRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Ticket not found"));
 
-        if (!isStaff(principal) && !ticket.getCustomer().getId().equals(principal.getUser().getId())) {
+        if (!com.example.ubp.auth.util.SecurityUtils.isStaff(principal)
+            && !ticket.getCustomer().getId().equals(principal.getUser().getId())) {
             throw new IllegalArgumentException("Not allowed to update this ticket");
         }
 
-        if (request.getStatus() != null && isStaff(principal)) {
+        if (request.getStatus() != null && com.example.ubp.auth.util.SecurityUtils.isStaff(principal)) {
             ticket.setStatus(request.getStatus());
         }
-        if (request.getPriority() != null && isStaff(principal)) {
+        if (request.getPriority() != null && com.example.ubp.auth.util.SecurityUtils.isStaff(principal)) {
             ticket.setPriority(request.getPriority());
         }
-        if (request.getAssignedToId() != null && isStaff(principal)) {
+        if (request.getAssignedToId() != null && com.example.ubp.auth.util.SecurityUtils.isStaff(principal)) {
             User assigned = userRepository.findById(request.getAssignedToId())
                 .orElseThrow(() -> new ResourceNotFoundException("Assigned user not found"));
             ticket.setAssignedTo(assigned);
@@ -116,7 +124,8 @@ public class TicketService {
     public TicketCommentResponse addComment(UserPrincipal principal, Long ticketId, TicketCommentRequest request) {
         Ticket ticket = ticketRepository.findById(ticketId)
             .orElseThrow(() -> new ResourceNotFoundException("Ticket not found"));
-        if (!isStaff(principal) && !ticket.getCustomer().getId().equals(principal.getUser().getId())) {
+        if (!com.example.ubp.auth.util.SecurityUtils.isStaff(principal)
+            && !ticket.getCustomer().getId().equals(principal.getUser().getId())) {
             throw new IllegalArgumentException("Not allowed to comment on this ticket");
         }
         TicketComment comment = new TicketComment();
@@ -134,14 +143,8 @@ public class TicketService {
             .build();
     }
 
-    private boolean isStaff(UserPrincipal principal) {
-        Set<SimpleGrantedAuthority> authorities = principal.getAuthorities().stream()
-            .filter(auth -> auth instanceof SimpleGrantedAuthority)
-            .map(auth -> (SimpleGrantedAuthority) auth)
-            .collect(java.util.stream.Collectors.toSet());
-        return authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))
-            || authorities.contains(new SimpleGrantedAuthority("ROLE_STAFF"));
-    }
+    // staff-check helper removed; use SecurityUtils
+
 
     private TicketResponse toResponse(Ticket ticket) {
         return TicketResponse.builder()

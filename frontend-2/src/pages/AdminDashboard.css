@@ -1,0 +1,79 @@
+.admin-dashboard {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.admin-dashboard h2 {
+  color: #333;
+  margin-bottom: 30px;
+  border-bottom: 2px solid #007bff;
+  padding-bottom: 10px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.stat-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.stat-card h3 {
+  margin: 0 0 10px 0;
+  font-size: 14px;
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+.stat-number {
+  font-size: 32px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.admin-overview {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  border-left: 4px solid #007bff;
+}
+
+.admin-overview h3 {
+  margin-top: 0;
+  color: #333;
+}
+
+.admin-overview ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.admin-overview li {
+  padding: 10px 0;
+  color: #555;
+  border-bottom: 1px solid #ddd;
+}
+
+.admin-overview li:last-child {
+  border-bottom: none;
+}
+
+.admin-overview a {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.admin-overview a:hover {
+  text-decoration: underline;
+}

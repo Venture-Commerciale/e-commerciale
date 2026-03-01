@@ -100,8 +100,13 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
-    public Page<OrderResponse> listOrders(UserPrincipal principal, OrderStatus status, Pageable pageable) {
-        if (isStaff(principal)) {
+    public Page<OrderResponse> listOrders(UserPrincipal principal, OrderStatus status, Long customerId, Pageable pageable) {
+        if (com.example.ubp.auth.util.SecurityUtils.isStaff(principal)) {
+            if (customerId != null) {
+                User customer = userRepository.findById(customerId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
+                return orderRepository.findByCustomer(customer, pageable).map(this::buildOrderResponse);
+            }
             if (status != null) {
                 return orderRepository.findByStatus(status, pageable).map(this::buildOrderResponse);
             }
@@ -114,7 +119,8 @@ public class OrderService {
     public OrderResponse getOrder(UserPrincipal principal, Long id) {
         Order order = orderRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
-        if (!isStaff(principal) && !order.getCustomer().getId().equals(principal.getUser().getId())) {
+        if (!com.example.ubp.auth.util.SecurityUtils.isStaff(principal)
+            && !order.getCustomer().getId().equals(principal.getUser().getId())) {
             throw new IllegalArgumentException("Not allowed to view this order");
         }
         return buildOrderResponse(order);
@@ -122,7 +128,7 @@ public class OrderService {
 
     @Transactional
     public OrderResponse updateStatus(UserPrincipal principal, Long id, UpdateOrderStatusRequest request) {
-        if (!isStaff(principal)) {
+        if (!com.example.ubp.auth.util.SecurityUtils.isStaff(principal)) {
             throw new IllegalArgumentException("Not allowed to update order status");
         }
         Order order = orderRepository.findById(id)
@@ -139,10 +145,8 @@ public class OrderService {
             .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
     }
 
-    private boolean isStaff(UserPrincipal principal) {
-        return principal.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))
-            || principal.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_STAFF"));
-    }
+    // role utility removed, SecurityUtils should be used instead
+
 
     private OrderResponse buildOrderResponse(Order order) {
         List<OrderItemResponse> items = orderItemRepository.findByOrder(order).stream()

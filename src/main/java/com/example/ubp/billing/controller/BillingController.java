@@ -85,7 +85,6 @@ public class BillingController {
     }
 
     private boolean isStaff(UserPrincipal principal) {
-        return principal.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))
-            || principal.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_STAFF"));
+        return com.example.ubp.auth.util.SecurityUtils.isStaff(principal);
     }
 }

@@ -5,6 +5,7 @@ Beginner-friendly Spring Boot modular monolith with Auth, Tickets, Orders, and B
 ## Features
 - JWT auth with refresh tokens and role-based access control
 - Ticket management with comments and assignment
+- Staff role can view/manage all tickets, orders, invoices, and customers via a dedicated staff panel
 - Orders with products and order items
 - Billing with invoices and payments
 - Audit logging for key actions

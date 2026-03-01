@@ -12,6 +12,7 @@ import com.example.ubp.tickets.service.TicketService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,13 +41,15 @@ public class TicketController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('STAFF') or hasRole('ADMIN') or hasRole('CUSTOMER')")
     public ApiResponse<Page<TicketResponse>> listTickets(
         @AuthenticationPrincipal UserPrincipal principal,
         @RequestParam(required = false) TicketStatus status,
         @RequestParam(required = false) Long assignedToId,
+        @RequestParam(required = false) Long customerId,
         Pageable pageable
     ) {
-        return new ApiResponse<>(true, ticketService.listTickets(principal, status, assignedToId, pageable));
+        return new ApiResponse<>(true, ticketService.listTickets(principal, status, assignedToId, customerId, pageable));
     }
 
     @GetMapping("/{id}")
@@ -58,6 +61,7 @@ public class TicketController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('STAFF') or hasRole('ADMIN') or hasRole('CUSTOMER')")
     public ApiResponse<TicketResponse> updateTicket(
         @AuthenticationPrincipal UserPrincipal principal,
         @PathVariable Long id,
@@ -67,6 +71,7 @@ public class TicketController {
     }
 
     @PostMapping("/{id}/comments")
+    @PreAuthorize("hasRole('STAFF') or hasRole('ADMIN') or hasRole('CUSTOMER')")
     public ApiResponse<TicketCommentResponse> addComment(
         @AuthenticationPrincipal UserPrincipal principal,
         @PathVariable Long id,

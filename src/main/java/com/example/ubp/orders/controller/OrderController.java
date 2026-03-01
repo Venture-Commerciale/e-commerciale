@@ -11,6 +11,7 @@ import com.example.ubp.orders.service.OrderService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,12 +45,14 @@ public class OrderController {
     }
 
     @GetMapping("/orders")
+    @PreAuthorize("hasRole('STAFF') or hasRole('ADMIN') or hasRole('CUSTOMER')")
     public ApiResponse<Page<OrderResponse>> listOrders(
         @AuthenticationPrincipal UserPrincipal principal,
         @RequestParam(required = false) OrderStatus status,
+        @RequestParam(required = false) Long customerId,
         Pageable pageable
     ) {
-        return new ApiResponse<>(true, orderService.listOrders(principal, status, pageable));
+        return new ApiResponse<>(true, orderService.listOrders(principal, status, customerId, pageable));
     }
 
     @GetMapping("/orders/{id}")
@@ -61,6 +64,7 @@ public class OrderController {
     }
 
     @PutMapping("/orders/{id}/status")
+    @PreAuthorize("hasRole('STAFF') or hasRole('ADMIN')")
     public ApiResponse<OrderResponse> updateOrderStatus(
         @AuthenticationPrincipal UserPrincipal principal,
         @PathVariable Long id,
