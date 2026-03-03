@@ -32,3 +32,4 @@ Beginner-friendly Spring Boot modular monolith with Auth, Tickets, Orders, and B
 - Roles are auto-created on startup.
 - Sample products are seeded on first run.
 - Demo users (password `Password123`): `admin@demo.com`, `staff@demo.com`, `customer@demo.com`.
+hii
