@@ -12,7 +12,11 @@ export function AuthProvider({ children }) {
     if (token) {
       setLoading(true);
       getMe(token)
-        .then((res) => setUser(res.data))
+        .then((res) => {
+          // Handle both wrapped and unwrapped responses
+          const userData = res.data || res;
+          setUser(userData);
+        })
         .catch(() => {
           setToken('');
           localStorage.removeItem('token');
@@ -25,8 +29,12 @@ export function AuthProvider({ children }) {
 
   const login = async (email, password) => {
     const res = await apiLogin(email, password);
-    setToken(res.data.accessToken);
-    localStorage.setItem('token', res.data.accessToken);
+    const accessToken = res.accessToken || res.data?.accessToken;
+    if (!accessToken) {
+      throw new Error('No access token received');
+    }
+    setToken(accessToken);
+    localStorage.setItem('token', accessToken);
   };
 
   const logout = async () => {

@@ -17,18 +17,24 @@ export default function TicketAssignForm({ ticket, onAssign, onCancel }) {
   const fetchStaffMembers = async () => {
     try {
       setLoading(true);
-      // Try to get staff members - this might need backend support
-      const res = await listAllUsers({ role: 'STAFF' }, token).catch(() => 
-        listAllUsers({}, token)
-      );
-      const allUsers = res.content || res.data || [];
-      // Filter for staff members
-      const staffMembers = allUsers.filter((u) =>
-        u.roles?.includes('ROLE_STAFF') || u.roles?.includes('ROLE_ADMIN')
-      );
+      setError('');
+      
+      // Fetch staff members with STAFF or ADMIN role
+      const res = await listAllUsers({ role: 'STAFF' }, token);
+      let staffMembers = (res.content || []);
+      
+      // If response is empty or doesn't have staff, try fetching all users
+      if (!staffMembers || staffMembers.length === 0) {
+        const allUsersRes = await listAllUsers({}, token);
+        staffMembers = (allUsersRes.content || []).filter((u) =>
+          u.roles?.some(r => r === 'STAFF' || r === 'ROLE_STAFF' || r === 'ADMIN' || r === 'ROLE_ADMIN')
+        );
+      }
+      
       setStaff(staffMembers);
     } catch (err) {
-      setError(err.message);
+      console.error('Failed to fetch staff members:', err);
+      setError('Failed to load staff members');
     } finally {
       setLoading(false);
     }
@@ -39,37 +45,46 @@ export default function TicketAssignForm({ ticket, onAssign, onCancel }) {
       setError('Please select a staff member');
       return;
     }
-    onAssign(parseInt(selectedStaffId));
+    onAssign(parseInt(selectedStaffId, 10));
   };
 
-  if (loading) return <div>Loading staff members...</div>;
+  if (loading) return <div className="assign-form"><p>Loading staff members...</p></div>;
 
   return (
     <div className="assign-form">
       <h4>Assign Ticket</h4>
       {error && <div className="error-message">{error}</div>}
 
-      <div className="form-group">
-        <label>Assign to:</label>
-        <select
-          value={selectedStaffId}
-          onChange={(e) => setSelectedStaffId(e.target.value)}
-        >
-          <option value="">-- Unassigned --</option>
-          {staff.map((member) => (
-            <option key={member.id} value={member.id}>
-              {member.name} ({member.email})
-            </option>
-          ))}
-        </select>
-      </div>
+      {staff.length > 0 ? (
+        <>
+          <div className="form-group">
+            <label>Assign to:</label>
+            <select
+              value={selectedStaffId}
+              onChange={(e) => {
+                setSelectedStaffId(e.target.value);
+                setError('');
+              }}
+            >
+              <option value="">-- Unassigned --</option>
+              {staff.map((member) => (
+                <option key={member.id} value={member.id}>
+                  {member.name} ({member.email})
+                </option>
+              ))}
+            </select>
+          </div>
 
-      <div className="form-buttons">
-        <button onClick={handleSubmit}>Assign</button>
-        <button onClick={onCancel} className="btn-cancel">
-          Cancel
-        </button>
-      </div>
+          <div className="form-buttons">
+            <button onClick={handleSubmit}>Assign</button>
+            <button onClick={onCancel} className="btn-cancel">
+              Cancel
+            </button>
+          </div>
+        </>
+      ) : (
+        <p className="error-message">No staff members available</p>
+      )}
     </div>
   );
 }

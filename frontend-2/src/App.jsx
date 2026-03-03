@@ -18,6 +18,9 @@ import AdminDashboard from './pages/AdminDashboard';
 import AdminOrders from './pages/AdminOrders';
 import AdminTickets from './pages/AdminTickets';
 import AdminInvoices from './pages/AdminInvoices';
+import AdminStaff from './pages/AdminStaff';
+import AdminAdmins from './pages/AdminAdmins';
+import AdminCustomers from './pages/AdminCustomers';
 
 import StaffDashboard from './pages/StaffDashboard';
 import StaffCustomers from './pages/StaffCustomers';
@@ -52,6 +55,9 @@ export default function App() {
               <Link to="/admin/orders">All Orders</Link>
               <Link to="/admin/tickets">All Tickets</Link>
               <Link to="/admin/invoices">Invoices</Link>
+              <Link to="/admin/admins">Admins</Link>
+              <Link to="/admin/staff">Staff</Link>
+              <Link to="/admin/customers">Customers</Link>
               <span style={{color: '#666'}}>|</span>
             </>
           )}
@@ -61,7 +67,7 @@ export default function App() {
               <Link to="/staff/customers">Customers</Link>
               <Link to="/staff/orders">All Orders</Link>
               <Link to="/staff/tickets">All Tickets</Link>
-              <Link to="/admin/invoices">Invoices</Link>
+              <Link to="/staff/invoices">Invoices</Link>
               <span style={{color: '#666'}}>|</span>
             </>
           )}
@@ -135,6 +141,18 @@ export default function App() {
             element={<AdminRoute><AdminTickets /></AdminRoute>}
           />
           <Route
+            path="/admin/staff"
+            element={<AdminRoute><AdminStaff /></AdminRoute>}
+          />
+          <Route
+            path="/admin/admins"
+            element={<AdminRoute><AdminAdmins /></AdminRoute>}
+          />
+          <Route
+            path="/admin/customers"
+            element={<AdminRoute><AdminCustomers /></AdminRoute>}
+          />
+          <Route
             path="/admin/invoices"
             element={<AdminRoute><AdminInvoices /></AdminRoute>}
           />
@@ -157,6 +175,10 @@ export default function App() {
           <Route
             path="/staff/tickets"
             element={<StaffRoute><AdminTickets /></StaffRoute>}
+          />
+          <Route
+            path="/staff/invoices"
+            element={<StaffRoute><AdminInvoices /></StaffRoute>}
           />
           <Route path="/*" element={<Navigate to="/products" replace />} />
         </Routes>

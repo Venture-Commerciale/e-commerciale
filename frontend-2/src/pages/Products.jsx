@@ -9,8 +9,8 @@ export default function Products() {
 
   useEffect(() => {
     setError('');
-    listProducts(0, 20, token)
-      .then((res) => setProducts(res.data.content || []))
+    listProducts(0, 50, token)
+      .then((res) => setProducts(res.content || []))
       .catch((e) => setError(e.message));
   }, [token]);
 

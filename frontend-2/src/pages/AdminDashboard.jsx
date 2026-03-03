@@ -74,6 +74,7 @@ export default function AdminDashboard() {
           <li><a href="/admin/orders">Manage All Orders</a> - View and update order statuses</li>
           <li><a href="/admin/tickets">Manage All Tickets</a> - Assign and update ticket details</li>
           <li><a href="/admin/invoices">View Invoices</a> - Monitor billing information</li>
+          <li><a href="/admin/staff">Manage Staff</a> - Create and review staff accounts</li>
         </ul>
       </div>
     </div>

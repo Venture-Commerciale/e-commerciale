@@ -7,12 +7,22 @@ export default function Tickets() {
   const { token, isStaff } = useAuth();
   const [tickets, setTickets] = useState([]);
   const [error, setError] = useState('');
+  const [page, setPage] = useState(0);
+  const [pageSize] = useState(10);
+  const [totalElements, setTotalElements] = useState(0);
 
   useEffect(() => {
-    listTickets({}, token)
-      .then((res) => setTickets(res.data.content || []))
+    listTickets({ page, size: pageSize }, token)
+      .then((res) => {
+        setTickets(res.content || []);
+        setTotalElements(res.totalElements || 0);
+      })
       .catch((e) => setError(e.message));
-  }, [token]);
+  }, [token, page, pageSize]);
+
+  const totalPages = Math.ceil(totalElements / pageSize);
+  const hasNextPage = page < totalPages - 1;
+  const hasPrevPage = page > 0;
 
   return (
     <div className="card">
@@ -26,13 +36,36 @@ export default function Tickets() {
         <button>New Ticket</button>
       </Link>
       {error && <p className="error">{error}</p>}
-      <ul>
-        {tickets.map((t) => (
-          <li key={t.id}>
-            <Link to={`/tickets/${t.id}`}>#{t.id}</Link> – {t.status} – {t.title}
-          </li>
-        ))}
-      </ul>
+      
+      {tickets.length > 0 ? (
+        <>
+          <ul>
+            {tickets.map((t) => (
+              <li key={t.id}>
+                <Link to={`/tickets/${t.id}`}>#{t.id}</Link> – {t.status} – {t.subject || t.title}
+              </li>
+            ))}
+          </ul>
+          
+          <div className="pagination">
+            <button 
+              onClick={() => setPage(p => p - 1)} 
+              disabled={!hasPrevPage}
+            >
+              ← Previous
+            </button>
+            <span>Page {page + 1} of {totalPages || 1} (Total: {totalElements})</span>
+            <button 
+              onClick={() => setPage(p => p + 1)} 
+              disabled={!hasNextPage}
+            >
+              Next →
+            </button>
+          </div>
+        </>
+      ) : (
+        <p>No tickets found. <Link to="/tickets/new">Create one now</Link></p>
+      )}
     </div>
   );
 }

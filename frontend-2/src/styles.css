@@ -14,14 +14,39 @@ body {
   justify-content: space-between;
 }
 
+.app header h1 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.app header nav {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
 .app header nav a {
   color: #fff;
-  margin-right: 15px;
   text-decoration: none;
+  transition: color 0.3s;
+}
+
+.app header nav a:hover {
+  color: #ddd;
 }
 
 .app header nav button {
-  margin-left: 10px;
+  background: #e74c3c;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.3s;
+}
+
+.app header nav button:hover {
+  background: #c0392b;
 }
 
 .card {
@@ -33,21 +58,222 @@ body {
 }
 
 .error {
-  color: red;
+  color: #c0392b;
+  background: #fadbd8;
+  padding: 10px;
+  border-radius: 4px;
+  margin: 10px 0;
 }
 
 .success {
-  color: green;
+  color: #27ae60;
+  background: #d5f4e6;
+  padding: 10px;
+  border-radius: 4px;
+  margin: 10px 0;
 }
 
 input, textarea, select {
   display: block;
   margin: 8px 0;
-  padding: 6px;
+  padding: 8px;
   width: 100%;
   max-width: 400px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
 }
 
 button {
-  padding: 8px 16px;
+  padding: 10px 16px;
+  margin: 5px;
+  background: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s;
+  font-size: 14px;
+}
+
+button:hover {
+  background: #2980b9;
+}
+
+button:disabled {
+  background: #bdc3c7;
+  cursor: not-allowed;
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin: 20px 0;
+  padding: 10px;
+  background: #f9f9f9;
+  border-radius: 4px;
+}
+
+.pagination button {
+  margin: 0;
+}
+
+.pagination span {
+  color: #555;
+  font-weight: 500;
+}
+
+/* Forms */
+form {
+  margin: 20px 0;
+}
+
+form > div {
+  margin: 15px 0;
+}
+
+form label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #333;
+}
+
+/* Lists and Tables */
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  padding: 10px;
+  margin: 5px 0;
+  background: #f9f9f9;
+  border-left: 4px solid #3498db;
+  border-radius: 2px;
+}
+
+li a {
+  color: #3498db;
+  text-decoration: none;
+}
+
+li a:hover {
+  text-decoration: underline;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  background: white;
+}
+
+table th {
+  background: #34495e;
+  color: white;
+  padding: 12px;
+  text-align: left;
+  font-weight: bold;
+}
+
+table td {
+  border-bottom: 1px solid #ddd;
+  padding: 12px;
+}
+
+table tr:hover {
+  background: #f5f5f5;
+}
+
+/* Payment Form */
+.payment-form {
+  background: #ecf0f1;
+  padding: 15px;
+  border-radius: 4px;
+  margin: 15px 0;
+  border-left: 4px solid #e74c3c;
+}
+
+.payment-form h4 {
+  margin-top: 0;
+  color: #c0392b;
+}
+
+.payment-form input,
+.payment-form select {
+  max-width: 300px;
+}
+
+/* Order/Invoice Details */
+.order-details,
+.invoice-section {
+  background: #fafafa;
+  padding: 15px;
+  border-radius: 4px;
+  margin: 15px 0;
+  border-left: 4px solid #27ae60;
+}
+
+.order-details h3,
+.invoice-section h3 {
+  margin-top: 15px;
+  color: #222;
+}
+
+.order-details p,
+.invoice-section p {
+  margin: 8px 0;
+}
+
+/* Staff Components */
+.staff-customers,
+.staff-customer-detail {
+  margin: 20px;
+}
+
+.staff-customers table {
+  cursor: pointer;
+}
+
+/* Loading State */
+p {
+  line-height: 1.6;
+  color: #555;
+}
+
+/* Links */
+a {
+  color: #3498db;
+  text-decoration: none;
+}
+
+/* Admin staff page */
+.admin-staff table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+.admin-staff table th,
+.admin-staff table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+.admin-staff .staff-form input {
+  max-width: 300px;
+  margin-bottom: 8px;
+}
+
+a:hover {
+  text-decoration: underline;
 }

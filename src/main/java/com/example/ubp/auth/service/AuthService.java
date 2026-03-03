@@ -5,6 +5,7 @@ import com.example.ubp.auth.dto.LoginRequest;
 import com.example.ubp.auth.dto.LogoutRequest;
 import com.example.ubp.auth.dto.RefreshRequest;
 import com.example.ubp.auth.dto.RegisterRequest;
+import com.example.ubp.auth.dto.CreateUserRequest;
 import com.example.ubp.auth.dto.UserProfileResponse;
 import com.example.ubp.auth.model.RefreshToken;
 import com.example.ubp.auth.model.Role;
@@ -81,6 +82,35 @@ public class AuthService {
         auditService.log(user, "REGISTER", "User", user.getId());
 
         return issueTokens(user);
+    }
+
+    @Transactional
+    public UserProfileResponse createUser(com.example.ubp.auth.dto.CreateUserRequest request) {
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new IllegalArgumentException("Email already registered");
+        }
+        Role role = roleRepository.findByName(request.getRole())
+            .orElseThrow(() -> new ResourceNotFoundException("Role not found: " + request.getRole()));
+
+        User user = new User();
+        user.setName(request.getName());
+        user.setEmail(request.getEmail());
+        user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
+        user.getRoles().add(role);
+        user.setStatus(UserStatus.ACTIVE);
+        userRepository.save(user);
+        auditService.log(user, "CREATE_USER", "User", user.getId());
+
+        // return a lightweight profile response rather than tokens
+        return UserProfileResponse.builder()
+            .id(user.getId())
+            .name(user.getName())
+            .email(user.getEmail())
+            .status(user.getStatus())
+            .roles(user.getRoles().stream()
+                .map(r -> r.getName().name())
+                .collect(java.util.stream.Collectors.toList()))
+            .build();
     }
 
     @Transactional

@@ -13,13 +13,13 @@ export default function StaffCustomerDetail() {
   useEffect(() => {
     if (!id) return;
     getUser(id, token)
-      .then(res => setUser(res.data))
+      .then(res => setUser(res))
       .catch(console.error);
-    listOrders({ customerId: id }, token)
-      .then(res => setOrders(res.data.content))
+    listOrders({ customerId: id, page: 0, size: 20 }, token)
+      .then(res => setOrders(res.content || []))
       .catch(console.error);
-    listTickets({ customerId: id }, token)
-      .then(res => setTickets(res.data.content))
+    listTickets({ customerId: id, page: 0, size: 20 }, token)
+      .then(res => setTickets(res.content || []))
       .catch(console.error);
   }, [id, token]);
 
@@ -29,18 +29,26 @@ export default function StaffCustomerDetail() {
       <h2>Customer: {user.name}</h2>
       <p>Email: {user.email}</p>
       <p>Status: {user.status}</p>
-      <h3>Orders</h3>
-      <ul>
-        {orders.map(o => (
-          <li key={o.id}>Order #{o.id} - {o.status} - ${o.total}</li>
-        ))}
-      </ul>
-      <h3>Tickets</h3>
-      <ul>
-        {tickets.map(t => (
-          <li key={t.id}>Ticket #{t.id} - {t.status} - {t.subject}</li>
-        ))}
-      </ul>
+      <h3>Orders ({orders.length})</h3>
+      {orders.length > 0 ? (
+        <ul>
+          {orders.map(o => (
+            <li key={o.id}>Order #{o.id} - {o.status} - ${o.total}</li>
+          ))}
+        </ul>
+      ) : (
+        <p>No orders</p>
+      )}
+      <h3>Tickets ({tickets.length})</h3>
+      {tickets.length > 0 ? (
+        <ul>
+          {tickets.map(t => (
+            <li key={t.id}>Ticket #{t.id} - {t.status} - {t.subject || t.title}</li>
+          ))}
+        </ul>
+      ) : (
+        <p>No tickets</p>
+      )}
     </div>
   );
 }

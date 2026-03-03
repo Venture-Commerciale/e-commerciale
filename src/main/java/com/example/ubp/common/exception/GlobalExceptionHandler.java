@@ -25,6 +25,14 @@ public class GlobalExceptionHandler {
         return buildError(HttpStatus.BAD_REQUEST, ex.getMessage(), request, null);
     }
 
+    @ExceptionHandler({
+        org.springframework.security.authorization.AuthorizationDeniedException.class,
+        org.springframework.security.access.AccessDeniedException.class
+    })
+    public ResponseEntity<ApiError> handleAccessDenied(Exception ex, HttpServletRequest request) {
+        return buildError(HttpStatus.FORBIDDEN, "Forbidden: " + ex.getMessage(), request, null);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiError> handleValidation(MethodArgumentNotValidException ex, HttpServletRequest request) {
         List<String> details = ex.getBindingResult().getFieldErrors().stream()

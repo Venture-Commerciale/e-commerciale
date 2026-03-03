@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { listAllUsers } from '../api';
+import { getCustomerList } from '../api';
 import { useNavigate } from 'react-router-dom';
 
-export default function StaffCustomers() {
+export default function AdminCustomers() {
   const { token } = useAuth();
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -16,7 +16,7 @@ export default function StaffCustomers() {
   useEffect(() => {
     setLoading(true);
     setError('');
-    listAllUsers({ role: 'CUSTOMER', page, size: pageSize }, token)
+    getCustomerList({ page, size: pageSize }, token)
       .then(res => {
         setCustomers(res.content || []);
         setTotalElements(res.totalElements || 0);
@@ -30,13 +30,13 @@ export default function StaffCustomers() {
   const hasPrevPage = page > 0;
 
   const handleRowClick = (id) => {
-    navigate(`/staff/customers/${id}`);
+    navigate(`/admin/customers/${id}`);
   };
 
   if (loading) return <p>Loading customers...</p>;
   return (
-    <div className="staff-customers">
-      <h2>Customers</h2>
+    <div className="admin-customers">
+      <h2>All Customers</h2>
       {error && <div className="error-message">{error}</div>}
       {customers.length > 0 ? (
         <>

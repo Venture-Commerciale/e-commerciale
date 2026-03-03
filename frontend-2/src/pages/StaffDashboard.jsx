@@ -10,7 +10,7 @@ export default function StaffDashboard() {
           <li><Link to="/staff/customers">Manage Customers</Link> - Browse and inspect customers</li>
           <li><Link to="/staff/orders">Manage All Orders</Link> - View and update order statuses</li>
           <li><Link to="/staff/tickets">Manage All Tickets</Link> - Assign and update ticket details</li>
-          <li><Link to="/admin/invoices">View Invoices</Link> - Monitor billing information</li>
+          <li><Link to="/staff/invoices">View Invoices</Link> - Monitor billing information</li>
         </ul>
       </div>
     </div>

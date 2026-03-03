@@ -12,7 +12,7 @@ export default function TicketDetail() {
 
   useEffect(() => {
     getTicket(id, token)
-      .then((res) => setTicket(res.data))
+      .then((res) => setTicket(res))
       .catch((e) => setError(e.message));
   }, [id, token]);
 
@@ -21,7 +21,7 @@ export default function TicketDetail() {
     if (!comment) return;
     try {
       const res = await addComment(id, { text: comment }, token);
-      setTicket((t) => ({ ...t, comments: [...(t.comments || []), res.data] }));
+      setTicket((t) => ({ ...t, comments: [...(t.comments || []), res] }));
       setComment('');
     } catch (e) {
       setError(e.message);

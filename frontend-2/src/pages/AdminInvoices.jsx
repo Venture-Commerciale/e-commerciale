@@ -56,7 +56,7 @@ export default function AdminInvoices() {
       setInvoiceLoading(true);
       setInvoiceError('');
       const invoice = await getInvoiceForOrder(orderId, token);
-      setSelectedInvoice(invoice.data || invoice);
+      setSelectedInvoice(invoice);
     } catch (err) {
       setInvoiceError(err.message);
     } finally {
